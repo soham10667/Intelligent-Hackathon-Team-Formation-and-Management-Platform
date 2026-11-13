@@ -1,6 +1,6 @@
 import os
 from typing import List, Optional
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Intelligent Hackathon Team Formation and Management Platform"
@@ -39,9 +39,11 @@ class Settings(BaseSettings):
     WEIGHT_AVAILABILITY: float = 0.20
     WEIGHT_ROLE_EXPERIENCE: float = 0.15
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        case_sensitive=True,
+        extra="ignore"
+    )
 
 settings = Settings()
 

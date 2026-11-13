@@ -37,7 +37,11 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
       const errJson = await res.json();
       errorDetail = errJson.detail || errJson.message || errorDetail;
     } catch (_) {
-      errorDetail = res.statusText || errorDetail;
+      if (res.status === 500 || res.status === 502 || res.status === 503 || res.status === 504) {
+        errorDetail = 'Backend server is unreachable. Please ensure the backend is running on port 8000.';
+      } else {
+        errorDetail = res.statusText || errorDetail;
+      }
     }
     throw new Error(errorDetail);
   }
