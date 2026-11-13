@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Users, Eye, EyeOff, Lock, Mail, ArrowRight, AlertCircle } from 'lucide-react';
+import { Users, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const loginSchema = z.object({
@@ -22,6 +22,7 @@ export const LoginPage: React.FC = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormInputs>({
     resolver: zodResolver(loginSchema),
@@ -37,105 +38,113 @@ export const LoginPage: React.FC = () => {
     }
   };
 
+  const handleFillDemo = () => {
+    setValue('email', 'admin@hackathon.io');
+    setValue('password', 'Hackathon2026!');
+  };
+
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200/80 shadow-lg p-8 sm:p-10 space-y-8 animate-in fade-in zoom-in-95 duration-200">
+    <div className="min-h-[75vh] flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-sm bg-white rounded-lg border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
         
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center text-white mx-auto shadow-md shadow-blue-500/20">
-            <Users className="w-6 h-6" />
+        {/* Brand Header */}
+        <div className="text-center space-y-1">
+          <div className="w-8 h-8 rounded bg-slate-900 flex items-center justify-center text-white mx-auto mb-3 shadow-sm">
+            <Users className="w-4 h-4 text-slate-100" />
           </div>
-          <h2 className="text-2xl font-bold text-slate-900">Welcome Back</h2>
-          <p className="text-xs text-slate-500">Sign in to manage your teams and hackathons</p>
+          <h1 className="text-lg font-semibold text-slate-950 tracking-tight">Sign in to TeamForge</h1>
+          <p className="text-xs text-slate-500">Access your hackathon teams and real-time requests</p>
         </div>
 
         {/* Server Error Alert */}
         {serverError && (
-          <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 flex-shrink-0" />
-            <span>{serverError}</span>
+          <div className="p-3 rounded border border-rose-200 bg-rose-50 text-xs text-rose-800 flex items-start gap-2">
+            <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-600 mt-0.5" />
+            <span className="leading-relaxed">{serverError}</span>
           </div>
         )}
 
-        {/* Login Form */}
+        {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           
           {/* Email */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-700">Email Address</label>
-            <div className="relative">
-              <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
-              <input
-                type="email"
-                placeholder="developer@example.com"
-                {...register('email')}
-                className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all ${
-                  errors.email ? 'border-red-300 bg-red-50/20' : 'border-slate-200 hover:border-slate-300'
-                }`}
-              />
-            </div>
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-slate-700">Email Address</label>
+            <input
+              type="email"
+              placeholder="developer@example.com"
+              {...register('email')}
+              className={`w-full px-3 py-2 rounded text-xs border focus-ring ${
+                errors.email ? 'border-rose-300 bg-rose-50/20' : 'border-slate-200 bg-white'
+              }`}
+            />
             {errors.email && (
-              <p className="text-[11px] text-red-600 font-medium">{errors.email.message}</p>
+              <p className="text-[11px] text-rose-600 font-medium">{errors.email.message}</p>
             )}
           </div>
 
           {/* Password */}
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-slate-700">Password</label>
+              <label className="text-xs font-medium text-slate-700">Password</label>
             </div>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
                 {...register('password')}
-                className={`w-full pl-10 pr-10 py-2.5 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all ${
-                  errors.password ? 'border-red-300 bg-red-50/20' : 'border-slate-200 hover:border-slate-300'
+                className={`w-full pl-3 pr-8 py-2 rounded text-xs border focus-ring ${
+                  errors.password ? 'border-rose-300 bg-rose-50/20' : 'border-slate-200 bg-white'
                 }`}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600"
+                className="absolute right-2.5 top-2 text-slate-400 hover:text-slate-600"
+                aria-label="Toggle password visibility"
               >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
               </button>
             </div>
             {errors.password && (
-              <p className="text-[11px] text-red-600 font-medium">{errors.password.message}</p>
+              <p className="text-[11px] text-rose-600 font-medium">{errors.password.message}</p>
             )}
           </div>
 
-          {/* Submit Button */}
+          {/* Submit */}
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/40 disabled:opacity-50 transition-all shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 mt-2"
+            className="w-full py-2 px-3 rounded text-xs font-medium text-white bg-slate-900 hover:bg-slate-800 disabled:opacity-50 transition-colors shadow-sm flex items-center justify-center gap-1.5"
           >
             {isSubmitting ? (
-              <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             ) : (
-              <>
-                <span>Sign In</span>
-                <ArrowRight className="w-4 h-4" />
-              </>
+              <span>Sign In</span>
             )}
           </button>
         </form>
 
-        {/* Demo Credentials Helper */}
-        <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-xl text-center space-y-1">
-          <p className="text-[11px] font-semibold text-slate-600 uppercase tracking-wider">Demo Admin Account</p>
-          <p className="text-xs text-slate-500 font-mono">admin@hackathon.io / Hackathon2026!</p>
+        {/* Demo Credentials Box */}
+        <div className="p-3 bg-slate-50 border border-slate-200 rounded text-xs space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-semibold text-slate-600 uppercase tracking-wide">Demo Credentials</span>
+            <button
+              type="button"
+              onClick={handleFillDemo}
+              className="text-[11px] text-blue-600 hover:text-blue-800 font-medium underline"
+            >
+              Autofill
+            </button>
+          </div>
+          <p className="text-[11px] text-slate-500 font-mono">admin@hackathon.io / Hackathon2026!</p>
         </div>
 
         {/* Footer */}
         <div className="text-center text-xs text-slate-500">
-          Don't have an account?{' '}
-          <Link to="/register" className="font-semibold text-blue-600 hover:text-blue-700">
-            Sign up for free
+          New participant?{' '}
+          <Link to="/register" className="font-medium text-slate-900 hover:underline">
+            Create an account
           </Link>
         </div>
 
@@ -143,3 +152,4 @@ export const LoginPage: React.FC = () => {
     </div>
   );
 };
+

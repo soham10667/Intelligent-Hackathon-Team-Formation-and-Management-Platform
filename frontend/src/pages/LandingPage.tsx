@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { 
-  Users, Sparkles, ShieldCheck, Zap, Compass, ArrowRight, 
-  CheckCircle2, AlertCircle, BarChart3, Clock, Lock, Layers 
+  Users, Compass, ArrowRight, CheckCircle2, ShieldCheck, 
+  BarChart2, Lock, Clock, Layers, Activity, GitMerge, Check
 } from 'lucide-react';
 import { api } from '../services/api';
 import { PlatformStats, Team } from '../types';
-import { TeamCard } from '../components/TeamCard';
 import { useAuth } from '../contexts/AuthContext';
 
 export const LandingPage: React.FC = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [stats, setStats] = useState<PlatformStats | null>(null);
   const [featuredTeams, setFeaturedTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +19,7 @@ export const LandingPage: React.FC = () => {
       try {
         const [statsData, teamsData] = await Promise.all([
           api.getPlatformStats(),
-          api.discoverTeams({ limit: 3, only_open_seats: true })
+          api.discoverTeams({ limit: 4, only_open_seats: true })
         ]);
         setStats(statsData);
         setFeaturedTeams(teamsData);
@@ -35,293 +33,370 @@ export const LandingPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-24 pb-16">
+    <div className="space-y-16 pb-16">
       
       {/* Hero Section */}
-      <section className="relative pt-12 pb-20 overflow-hidden">
-        {/* Subtle decorative background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/70 via-indigo-50/30 to-transparent -z-10 pointer-events-none" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200/80 text-blue-700 text-xs font-semibold tracking-wide animate-in fade-in slide-in-from-top-4 duration-500 shadow-sm">
-            <Sparkles className="w-4 h-4 text-blue-600" />
-            <span>High-Concurrency Team Formation Platform</span>
-          </div>
+      <section className="pt-12 sm:pt-16 pb-10 max-w-5xl mx-auto px-4 sm:px-6 text-center space-y-6">
+        
+        {/* Subtle pill badge */}
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded border border-slate-200 bg-white text-slate-700 text-xs font-mono">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+          <span>Production Architecture • ACID Consistency Engine</span>
+        </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.15] max-w-4xl mx-auto">
-            Find Your Perfect <br />
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Hackathon Team.
-            </span>
-          </h1>
+        {/* Direct, non-decorative heading */}
+        <h1 className="text-3xl sm:text-5xl font-bold text-slate-950 tracking-tight leading-[1.15] max-w-3xl mx-auto">
+          Find Your Perfect Hackathon Team.
+        </h1>
 
-          <p className="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed">
-            Connect with passionate developers, designers and innovators. Discover teammates, build balanced teams and turn your ideas into successful projects.
-          </p>
+        <p className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
+          Connect with passionate developers, designers, and innovators. Discover teammates, analyze skill gaps, and form balanced teams with race-proof database concurrency.
+        </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-2">
-            <Link
-              to="/hackathons"
-              className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-all shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 hover:scale-[1.02]"
-            >
-              <Compass className="w-4 h-4" />
-              <span>Explore Hackathons</span>
-            </Link>
-            <Link
-              to="/teammates"
-              className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-semibold text-sm transition-all border border-slate-200 shadow-sm flex items-center justify-center gap-2 hover:scale-[1.02]"
-            >
-              <Users className="w-4 h-4" />
-              <span>Find Teammates</span>
-            </Link>
-          </div>
+        {/* Action Buttons */}
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+          <Link
+            to="/hackathons"
+            className="px-4 py-2 rounded-md bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs shadow-sm transition-colors flex items-center gap-1.5"
+          >
+            <Compass className="w-3.5 h-3.5" />
+            <span>Explore Hackathons</span>
+          </Link>
+          <Link
+            to="/teammates"
+            className="px-4 py-2 rounded-md bg-white hover:bg-slate-50 text-slate-800 font-medium text-xs border border-slate-200 shadow-sm transition-colors flex items-center gap-1.5"
+          >
+            <Users className="w-3.5 h-3.5" />
+            <span>Find Teammates</span>
+          </Link>
+        </div>
 
-          {/* Hero Illustration / Dashboard Preview */}
-          <div className="pt-10 max-w-5xl mx-auto">
-            <div className="relative rounded-2xl p-2 bg-gradient-to-b from-slate-200 to-slate-100 shadow-2xl border border-slate-200">
-              <div className="rounded-xl overflow-hidden bg-white border border-slate-200 shadow-inner p-6 sm:p-8 text-left space-y-6">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 rounded-full bg-red-400" />
-                    <div className="w-3 h-3 rounded-full bg-amber-400" />
-                    <div className="w-3 h-3 rounded-full bg-emerald-400" />
-                    <span className="text-xs text-slate-400 font-mono pl-2">teamforge.io/discovery</span>
+        {/* Carefully Designed Product Interface Preview */}
+        <div className="pt-8 text-left">
+          <div className="rounded-lg border border-slate-200 bg-white shadow-sm overflow-hidden">
+            
+            {/* Window Chrome */}
+            <div className="px-4 py-2.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+                <span className="ml-2 font-mono text-[11px] text-slate-400">teamforge.internal/discovery</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-[11px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                <span>WebSockets Connected (0ms)</span>
+              </div>
+            </div>
+
+            {/* Inner Dashboard View */}
+            <div className="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+              
+              {/* Main Table Preview */}
+              <div className="lg:col-span-2 space-y-3">
+                <div className="flex items-center justify-between text-xs pb-1 border-b border-slate-100">
+                  <span className="font-semibold text-slate-900 uppercase tracking-wider text-[11px]">Live Team Discovery Board</span>
+                  <span className="text-slate-400 font-mono text-[11px]">Showing Open Opportunities</span>
+                </div>
+
+                <div className="divide-y divide-slate-100 border border-slate-100 rounded">
+                  {[
+                    {
+                      name: 'NeuralCraft AI',
+                      cat: 'AI/ML',
+                      leader: 'Alex Chen',
+                      capacity: '3/4 members',
+                      needed: ['PyTorch', 'FastAPI'],
+                      seats: '1 seat open'
+                    },
+                    {
+                      name: 'Solana Zero Layer',
+                      cat: 'Web3',
+                      leader: 'Maria Garcia',
+                      capacity: '2/4 members',
+                      needed: ['Rust', 'React'],
+                      seats: '2 seats open'
+                    },
+                    {
+                      name: 'CloudNative Observability',
+                      cat: 'DevTools',
+                      leader: 'Devon Vance',
+                      capacity: '3/5 members',
+                      needed: ['Go', 'Kubernetes'],
+                      seats: '2 seats open'
+                    }
+                  ].map((t, idx) => (
+                    <div key={idx} className="p-3 flex items-center justify-between text-xs hover:bg-slate-50/60 transition-colors">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-slate-900">{t.name}</span>
+                          <span className="px-1.5 py-0.2 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
+                            {t.cat}
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-slate-500 flex items-center gap-2">
+                          <span>Lead: {t.leader}</span>
+                          <span>•</span>
+                          <span className="font-mono text-slate-600">{t.capacity}</span>
+                        </div>
+                      </div>
+                      <div className="text-right space-y-1">
+                        <span className="inline-block px-2 py-0.5 text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded border border-emerald-100">
+                          {t.seats}
+                        </span>
+                        <div className="flex items-center justify-end gap-1">
+                          {t.needed.map((sk) => (
+                            <span key={sk} className="px-1.5 py-0.2 text-[10px] bg-slate-50 border border-slate-200 rounded text-slate-600 font-mono">
+                              {sk}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sidebar Inspector Preview */}
+              <div className="border border-slate-100 rounded p-4 bg-slate-50/50 space-y-4 text-xs">
+                <div>
+                  <div className="font-semibold text-slate-900 text-[11px] uppercase tracking-wider mb-1">
+                    Skill Gap & Compatibility
                   </div>
-                  <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>Real-Time WebSocket Sync Active</span>
+                  <p className="text-slate-500 text-[11px] leading-relaxed">
+                    Automated matrix checking complementary proficiencies.
+                  </p>
+                </div>
+
+                <div className="space-y-2 pt-1 border-t border-slate-200/80">
+                  <div className="flex justify-between text-[11px]">
+                    <span className="text-slate-600">Frontend (React / Tailwind)</span>
+                    <span className="text-emerald-600 font-medium flex items-center gap-1"><Check className="w-3 h-3" /> Covered</span>
+                  </div>
+                  <div className="flex justify-between text-[11px]">
+                    <span className="text-slate-600">Backend API (FastAPI / SQL)</span>
+                    <span className="text-emerald-600 font-medium flex items-center gap-1"><Check className="w-3 h-3" /> Covered</span>
+                  </div>
+                  <div className="flex justify-between text-[11px]">
+                    <span className="text-slate-600">DevOps & Cloud (Docker / CI)</span>
+                    <span className="text-rose-600 font-medium">Critical Gap</span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-4 rounded-xl bg-blue-50/50 border border-blue-100 space-y-1.5">
-                    <span className="text-xs font-semibold text-blue-700">Intelligent Matching</span>
-                    <p className="text-xl font-bold text-slate-900">94.8% Synergy</p>
-                    <p className="text-xs text-slate-500">Completes missing Backend & DevOps gaps</p>
+                <div className="pt-2 border-t border-slate-200/80">
+                  <div className="flex items-center justify-between font-medium text-[11px] text-slate-700 mb-1">
+                    <span>Overall Team Compatibility</span>
+                    <span className="font-mono text-slate-900">92.4%</span>
                   </div>
-                  <div className="p-4 rounded-xl bg-purple-50/50 border border-purple-100 space-y-1.5">
-                    <span className="text-xs font-semibold text-purple-700">Race-Proof Engine</span>
-                    <p className="text-xl font-bold text-slate-900">0 Over-subscription</p>
-                    <p className="text-xs text-slate-500">Atomic transactional row locks in PostgreSQL</p>
-                  </div>
-                  <div className="p-4 rounded-xl bg-emerald-50/50 border border-emerald-100 space-y-1.5">
-                    <span className="text-xs font-semibold text-emerald-700">Skill Gap Analyzer</span>
-                    <p className="text-xl font-bold text-slate-900">100% Transparent</p>
-                    <p className="text-xs text-slate-500">Directly maps member proficiencies</p>
+                  <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-slate-900 rounded-full" style={{ width: '92.4%' }} />
                   </div>
                 </div>
               </div>
+
             </div>
           </div>
-
         </div>
       </section>
 
-      {/* Real Platform Statistics (Section 4.C) */}
+      {/* Real Platform Statistics (Section 4.C - Verified Data Only) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center space-y-2 mb-8">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-blue-600">Verified Platform Metrics</h2>
-          <p className="text-2xl font-bold text-slate-900">Live Hackathon Activity</p>
+        <div className="border-y border-slate-200 bg-white grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
+          <div className="p-6 text-center space-y-1">
+            <div className="text-2xl sm:text-3xl font-bold font-mono text-slate-900">
+              {loading ? '...' : (stats?.total_participants || 0).toLocaleString()}
+            </div>
+            <div className="text-xs text-slate-500 font-medium uppercase tracking-wider">Total Participants</div>
+          </div>
+
+          <div className="p-6 text-center space-y-1">
+            <div className="text-2xl sm:text-3xl font-bold font-mono text-slate-900">
+              {loading ? '...' : (stats?.active_hackathons || 0).toLocaleString()}
+            </div>
+            <div className="text-xs text-slate-500 font-medium uppercase tracking-wider">Active Hackathons</div>
+          </div>
+
+          <div className="p-6 text-center space-y-1">
+            <div className="text-2xl sm:text-3xl font-bold font-mono text-slate-900">
+              {loading ? '...' : (stats?.teams_created || 0).toLocaleString()}
+            </div>
+            <div className="text-xs text-slate-500 font-medium uppercase tracking-wider">Teams Formed</div>
+          </div>
+
+          <div className="p-6 text-center space-y-1">
+            <div className="text-2xl sm:text-3xl font-bold font-mono text-slate-900">
+              {loading ? '...' : (stats?.successful_team_matches || 0).toLocaleString()}
+            </div>
+            <div className="text-xs text-slate-500 font-medium uppercase tracking-wider">Verified Matches</div>
+          </div>
+        </div>
+      </section>
+
+      {/* Main Features (Section 4.E) */}
+      <section id="features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="space-y-1 max-w-xl">
+          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Engineered for Reliability</div>
+          <h2 className="text-2xl font-bold text-slate-950">Platform Architecture & Core Capabilities</h2>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm text-center space-y-1.5">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-2">
-              <Users className="w-5 h-5" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          
+          <div className="panel p-5 space-y-2.5">
+            <div className="w-8 h-8 rounded bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-800">
+              <ShieldCheck className="w-4 h-4" />
             </div>
-            <p className="text-3xl font-extrabold text-slate-900">
-              {loading ? '...' : (stats?.total_participants || 0).toLocaleString()}
+            <h3 className="text-sm font-semibold text-slate-900">Race-Proof Concurrency Engine</h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              PostgreSQL row-level locking (<code className="text-slate-800 bg-slate-100 px-1 py-0.5 rounded font-mono text-[11px]">SELECT ... FOR UPDATE</code>) eliminates TOCTOU race conditions. Verified with 50 simultaneous join requests yielding exactly 1 member and 49 clean rejections.
             </p>
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Participants</p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm text-center space-y-1.5">
-            <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-2">
-              <Compass className="w-5 h-5" />
+          <div className="panel p-5 space-y-2.5">
+            <div className="w-8 h-8 rounded bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-800">
+              <BarChart2 className="w-4 h-4" />
             </div>
-            <p className="text-3xl font-extrabold text-slate-900">
-              {loading ? '...' : (stats?.active_hackathons || 0).toLocaleString()}
+            <h3 className="text-sm font-semibold text-slate-900">Explainable Teammate Matching</h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Transparent mathematical scoring formula: 40% complementary skills, 25% timezone alignment, 20% availability overlap, and 15% role experience. No black-box hallucinations.
             </p>
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Active Hackathons</p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm text-center space-y-1.5">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-2">
-              <Layers className="w-5 h-5" />
+          <div className="panel p-5 space-y-2.5">
+            <div className="w-8 h-8 rounded bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-800">
+              <Activity className="w-4 h-4" />
             </div>
-            <p className="text-3xl font-extrabold text-slate-900">
-              {loading ? '...' : (stats?.teams_created || 0).toLocaleString()}
+            <h3 className="text-sm font-semibold text-slate-900">Real-Time WebSocket Sync</h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Live updates for discovery board availability, join requests, and member transitions delivered instantly without polling or manual page refreshing.
             </p>
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Teams Created</p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm text-center space-y-1.5">
-            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-2">
-              <CheckCircle2 className="w-5 h-5" />
+          <div className="panel p-5 space-y-2.5">
+            <div className="w-8 h-8 rounded bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-800">
+              <Layers className="w-4 h-4" />
             </div>
-            <p className="text-3xl font-extrabold text-slate-900">
-              {loading ? '...' : (stats?.successful_team_matches || 0).toLocaleString()}
+            <h3 className="text-sm font-semibold text-slate-900">Skill Gap Matrix</h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Structured analysis contrasting team target skills against current member proficiencies (1-5) to identify missing critical competencies.
             </p>
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Successful Matches</p>
           </div>
+
+          <div className="panel p-5 space-y-2.5">
+            <div className="w-8 h-8 rounded bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-800">
+              <Lock className="w-4 h-4" />
+            </div>
+            <h3 className="text-sm font-semibold text-slate-900">Cryptographic Invitations</h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              High-entropy tokens (<code className="text-slate-800 bg-slate-100 px-1 py-0.5 rounded font-mono text-[11px]">HACK-XXXX-YYYY</code>) with configurable TTL, rate limiting, and instant leader revocation.
+            </p>
+          </div>
+
+          <div className="panel p-5 space-y-2.5">
+            <div className="w-8 h-8 rounded bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-800">
+              <Clock className="w-4 h-4" />
+            </div>
+            <h3 className="text-sm font-semibold text-slate-900">Immutable Audit Logging</h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Append-only audit trail logging every team creation, membership mutation, leadership succession, and request resolution for competition transparency.
+            </p>
+          </div>
+
         </div>
       </section>
 
       {/* How It Works (Section 4.D) */}
-      <section id="how-it-works" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center space-y-3 mb-12">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-blue-600">Streamlined Process</h2>
-          <p className="text-3xl font-bold text-slate-900">How TeamForge Works</p>
-          <p className="text-sm text-slate-500 max-w-lg mx-auto">
-            From registration to project kickoff in four straightforward steps.
-          </p>
+      <section id="how-it-works" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="space-y-1 max-w-xl">
+          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Workflow</div>
+          <h2 className="text-2xl font-bold text-slate-950">How Teams Form in 4 Steps</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
             {
               step: '01',
               title: 'Create Your Profile',
-              desc: 'List your technical skills, proficiency levels (1-5), preferred roles, and availability.',
-              icon: Users,
+              desc: 'Enter verified technical skills, proficiency levels (1-5), preferred roles, timezone, and weekly availability.'
             },
             {
               step: '02',
               title: 'Discover Hackathons',
-              desc: 'Browse verified upcoming challenges, register with one click, and explore team requirements.',
-              icon: Compass,
+              desc: 'Select upcoming competitions, verify team-size constraints (e.g. 2-5 members), and register in one click.'
             },
             {
               step: '03',
               title: 'Find Your Teammates',
-              desc: 'Use explainable compatibility matching to identify developers who complement your exact gaps.',
-              icon: Sparkles,
+              desc: 'Filter the live discovery board or review algorithmic recommendations with transparent match scores.'
             },
             {
               step: '04',
               title: 'Build Your Team',
-              desc: 'Send requests or invite members via cryptographically secure codes with zero capacity collisions.',
-              icon: ShieldCheck,
-            },
+              desc: 'Send atomic join requests or invite members via secure codes with zero capacity collisions.'
+            }
           ].map((item, idx) => (
-            <div key={idx} className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm relative space-y-3 group hover:border-blue-200 transition-colors">
-              <span className="text-3xl font-black text-slate-100 group-hover:text-blue-100 transition-colors">
-                {item.step}
-              </span>
-              <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
-                <item.icon className="w-5 h-5" />
-              </div>
-              <h3 className="font-bold text-slate-900 text-base">{item.title}</h3>
-              <p className="text-xs text-slate-500 leading-relaxed">{item.desc}</p>
+            <div key={idx} className="panel p-5 space-y-2">
+              <div className="font-mono text-xs text-slate-400 font-semibold">{item.step}</div>
+              <h3 className="text-sm font-semibold text-slate-900">{item.title}</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">{item.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Main Features (Section 4.E) */}
-      <section id="features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center space-y-3 mb-12">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-blue-600">Engineering Excellence</h2>
-          <p className="text-3xl font-bold text-slate-900">Built for Serious Hackathon Teams</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-              <Sparkles className="w-5 h-5" />
-            </div>
-            <h3 className="font-bold text-slate-900 text-base">Smart Teammate Matching</h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Transparent, weighted algorithm analyzing complementary skills (40%), timezones (25%), availability (20%), and role balance (15%). No black-box hallucinations.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-              <BarChart3 className="w-5 h-5" />
-            </div>
-            <h3 className="font-bold text-slate-900 text-base">Skill Gap Analysis</h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Visual matrix showing which team requirements are covered, underrepresented, or completely missing, with direct role recommendations.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
-              <Zap className="w-5 h-5" />
-            </div>
-            <h3 className="font-bold text-slate-900 text-base">Real-Time WebSocket Sync</h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Instant live notifications and discovery board updates as teams are created, requests accepted, and seats filled—no page refreshes required.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <h3 className="font-bold text-slate-900 text-base">Race-Proof Formation</h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              PostgreSQL row-level locking ensures that 50 simultaneous join requests against 1 remaining seat yield exactly 1 member and 49 clean rejections.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-              <Lock className="w-5 h-5" />
-            </div>
-            <h3 className="font-bold text-slate-900 text-base">Cryptographic Invitations</h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              High-entropy invitation tokens with expiration bounds, single-use limits, rate limiting, and instant leader revocation capabilities.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
-              <Clock className="w-5 h-5" />
-            </div>
-            <h3 className="font-bold text-slate-900 text-base">Immutable Audit History</h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Every creation, membership join, leave, leadership transition, and invite redemption is recorded permanently in a structured audit trail.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Why Choose This Platform (Section 4.F) */}
+      {/* The Problem We Solve (Section 4.F) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-8 sm:p-12 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-8">
-          <div className="text-center space-y-2">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-blue-600">The Modern Standard</h2>
-            <p className="text-2xl sm:text-3xl font-bold text-slate-900">Why Hackathons Choose TeamForge</p>
+        <div className="panel p-6 sm:p-8 space-y-6">
+          <div className="space-y-1">
+            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Comparison</div>
+            <h2 className="text-xl font-bold text-slate-950">Why Hackathon Organizers Choose TeamForge</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-            <div className="p-5 rounded-2xl bg-red-50/40 border border-red-100 space-y-3">
-              <div className="flex items-center gap-2 text-rose-700 font-bold text-sm">
-                <AlertCircle className="w-4 h-4" />
-                <span>Ordinary Hackathon Platforms</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+            <div className="p-4 rounded border border-rose-200 bg-rose-50/30 space-y-3">
+              <div className="text-xs font-semibold text-rose-800 uppercase tracking-wide">
+                Ordinary Hackathon Teams (Without Platform)
               </div>
-              <ul className="space-y-2 text-xs text-slate-600 list-disc list-inside">
-                <li>Chaotic Discord channels & spreadsheet signups</li>
-                <li>Teams with 4 frontend devs and zero backend engineers</li>
-                <li>Over-subscribed teams due to race conditions during deadlines</li>
-                <li>Participants secretly registered in multiple competing teams</li>
-                <li>Stale listings for teams that are already full</li>
+              <ul className="space-y-2 text-xs text-slate-600">
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-500 font-bold">×</span>
+                  <span>Unbalanced teams (e.g., 4 frontend developers and zero backend or design).</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-500 font-bold">×</span>
+                  <span>Over-subscribed teams due to application-level race conditions during rush hours.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-500 font-bold">×</span>
+                  <span>Participants secretly registered across multiple teams, breaking competition rules.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-500 font-bold">×</span>
+                  <span>Stale spreadsheets and chaotic chat rooms with no real-time availability updates.</span>
+                </li>
               </ul>
             </div>
 
-            <div className="p-5 rounded-2xl bg-emerald-50/40 border border-emerald-100 space-y-3">
-              <div className="flex items-center gap-2 text-emerald-700 font-bold text-sm">
-                <CheckCircle2 className="w-4 h-4" />
-                <span>TeamForge SaaS Platform</span>
+            <div className="p-4 rounded border border-emerald-200 bg-emerald-50/30 space-y-3">
+              <div className="text-xs font-semibold text-emerald-800 uppercase tracking-wide">
+                TeamForge Platform Guarantees
               </div>
-              <ul className="space-y-2 text-xs text-slate-700 list-disc list-inside font-medium">
-                <li>Structured discovery board with live seat and skill filters</li>
-                <li>Intelligent recommendation engine matching complementary gaps</li>
-                <li>Database row locks prevent over-subscription under heavy load</li>
-                <li>Database constraints enforce exactly 1 active team per participant</li>
-                <li>Instant WebSocket live sync removes full teams immediately</li>
+              <ul className="space-y-2 text-xs text-slate-700">
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold">✓</span>
+                  <span>Automated skill gap analyzer recommends complementary roles and proficiencies.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold">✓</span>
+                  <span>PostgreSQL row locks prevent over-subscription under high simultaneous request load.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold">✓</span>
+                  <span>Physical database UNIQUE constraints enforce exactly 1 team membership per event.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold">✓</span>
+                  <span>Real-time WebSockets remove full teams from discovery immediately without page refresh.</span>
+                </li>
               </ul>
             </div>
           </div>
@@ -329,21 +404,21 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* Call to Action (Section 4.G) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="p-10 sm:p-14 rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-xl shadow-blue-500/10 space-y-6">
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight max-w-xl mx-auto">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="panel p-8 sm:p-10 text-center space-y-4 bg-slate-900 text-white border-slate-900">
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight max-w-md mx-auto">
             Your Next Great Project Starts With the Right Team.
           </h2>
-          <p className="text-sm sm:text-base text-blue-100 max-w-md mx-auto">
-            Join thousands of developers, designers, and innovators forming championship-winning hackathon teams.
+          <p className="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto">
+            Discover teammates, analyze skill gaps, and form balanced teams with race-proof database concurrency.
           </p>
           <div className="pt-2">
             <Link
               to={user ? "/hackathons" : "/register"}
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-blue-600 font-bold text-sm hover:bg-blue-50 transition-all shadow-md"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-white text-slate-900 font-medium text-xs hover:bg-slate-100 transition-colors shadow-sm"
             >
-              <span>{user ? 'Browse Hackathons & Create Team' : 'Create Your Team Now'}</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>{user ? 'Browse Hackathons & Create Team' : 'Create Your Team'}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
@@ -352,3 +427,4 @@ export const LandingPage: React.FC = () => {
     </div>
   );
 };
+

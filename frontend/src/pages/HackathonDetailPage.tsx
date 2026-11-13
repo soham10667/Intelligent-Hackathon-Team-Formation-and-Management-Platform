@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
-  Compass, Calendar, Users, Award, ShieldCheck, PlusCircle, 
-  ArrowRight, CheckCircle2, AlertCircle 
+  Calendar, Users, ShieldCheck, Plus, 
+  CheckCircle2, ChevronRight, ArrowUpRight, Clock
 } from 'lucide-react';
 import { api } from '../services/api';
 import { Hackathon, Team } from '../types';
@@ -100,305 +100,343 @@ export const HackathonDetailPage: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="py-20 text-center text-xs text-slate-400">Loading hackathon details...</div>;
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+        <div className="inline-flex items-center gap-2 text-xs font-mono text-slate-500">
+          <span className="w-2 h-2 rounded-full bg-slate-400 animate-pulse" />
+          Loading hackathon specifications...
+        </div>
+      </div>
+    );
   }
 
   if (!hackathon) {
-    return <div className="py-20 text-center text-xs text-slate-400">Hackathon not found</div>;
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center space-y-4">
+        <p className="text-sm text-slate-600">Hackathon not found.</p>
+        <Link to="/hackathons" className="btn btn-secondary text-xs">
+          Return to Hackathons Directory
+        </Link>
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="min-h-screen bg-slate-50/60 pb-16">
       
-      {/* Banner & Hero Header */}
-      <div className="relative rounded-3xl overflow-hidden bg-slate-900 border border-slate-200 shadow-md">
-        <div className="h-64 sm:h-80 w-full relative">
-          <img
-            src={hackathon.banner_url || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&auto=format&fit=crop&q=80"}
-            alt={hackathon.title}
-            className="w-full h-full object-cover opacity-60"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
-        </div>
+      {/* Header Workspace */}
+      <div className="bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-4">
+          
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-2 text-xs text-slate-500 font-mono">
+            <Link to="/hackathons" className="hover:text-slate-900 transition-colors">
+              Hackathons
+            </Link>
+            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            <span className="text-slate-900 font-medium truncate">{hackathon.title}</span>
+          </nav>
 
-        <div className="absolute bottom-0 inset-x-0 p-6 sm:p-10 text-white space-y-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-600 text-white shadow-sm">
-              {hackathon.status}
-            </span>
-            <span className="text-xs text-slate-300 font-medium">
-              Organized by {hackathon.organizer_name}
-            </span>
+          {/* Title & Actions */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pt-1">
+            <div className="space-y-2">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <h1 className="text-2xl font-bold text-slate-950 tracking-tight">
+                  {hackathon.title}
+                </h1>
+                <span
+                  className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono font-semibold uppercase ${
+                    hackathon.status === 'ongoing'
+                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                      : hackathon.status === 'upcoming'
+                      ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                      : 'bg-slate-100 text-slate-600 border border-slate-200'
+                  }`}
+                >
+                  <span className={`w-1.5 h-1.5 rounded-full ${hackathon.status === 'ongoing' ? 'bg-emerald-500' : 'bg-blue-600'}`} />
+                  {hackathon.status}
+                </span>
+                <span className="text-xs text-slate-500 font-mono">
+                  Organized by {hackathon.organizer_name}
+                </span>
+              </div>
+
+              <p className="text-xs sm:text-sm text-slate-600 max-w-3xl leading-relaxed">
+                {hackathon.description}
+              </p>
+            </div>
+
+            {/* Contextual Action Button */}
+            <div className="flex items-center gap-2.5">
+              {!user ? (
+                <Link
+                  to="/login"
+                  className="btn btn-primary text-xs"
+                >
+                  Sign In to Participate
+                </Link>
+              ) : !hackathon.is_registered ? (
+                <button
+                  onClick={handleRegister}
+                  className="btn btn-primary text-xs"
+                >
+                  Register for Competition
+                </button>
+              ) : hackathon.user_team_id ? (
+                <Link
+                  to={`/teams/${hackathon.user_team_id}`}
+                  className="btn btn-secondary text-xs"
+                >
+                  Open Team Workspace
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </Link>
+              ) : (
+                <button
+                  onClick={() => setCreateTeamModalOpen(true)}
+                  className="btn btn-primary text-xs"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  Form a New Team
+                </button>
+              )}
+            </div>
           </div>
 
-          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
-            {hackathon.title}
-          </h1>
+          {/* Metric Strip */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-100 text-xs">
+            <div className="space-y-0.5">
+              <span className="font-mono text-[11px] text-slate-400 uppercase tracking-wider">Competition Timeline</span>
+              <div className="font-mono text-slate-800 font-medium">
+                {new Date(hackathon.start_date).toLocaleDateString()} — {new Date(hackathon.end_date).toLocaleDateString()}
+              </div>
+            </div>
 
-          <p className="text-xs sm:text-sm text-slate-200 max-w-2xl line-clamp-2 leading-relaxed">
-            {hackathon.description}
+            <div className="space-y-0.5 sm:border-l sm:border-slate-100 sm:pl-4">
+              <span className="font-mono text-[11px] text-slate-400 uppercase tracking-wider">Team Capacity Limits</span>
+              <div className="font-mono text-slate-800 font-medium">
+                {hackathon.min_team_size} min to {hackathon.max_team_size} max members
+              </div>
+            </div>
+
+            <div className="space-y-0.5 sm:border-l sm:border-slate-100 sm:pl-4">
+              <span className="font-mono text-[11px] text-slate-400 uppercase tracking-wider">Registration Deadline</span>
+              <div className="font-mono text-slate-800 font-medium">
+                {new Date(hackathon.registration_deadline).toLocaleDateString()}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
+        
+        {/* Guidelines Panel */}
+        <div className="panel p-5 space-y-2">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-slate-700" />
+            <h2 className="text-sm font-semibold text-slate-950">Competition Rules & Eligibility</h2>
+          </div>
+          <p className="text-xs text-slate-600 whitespace-pre-line leading-relaxed">
+            {hackathon.rules || "1. All code and deliverables must be authored during the official competition window.\n2. Team limits are enforced at the database transaction level.\n3. Participants may belong to exactly one active team per competition."}
           </p>
         </div>
-      </div>
 
-      {/* Meta Stats Row & Action Buttons */}
-      <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="flex flex-wrap items-center gap-6 text-xs text-slate-600">
-          <div>
-            <span className="text-slate-400 block text-[11px] uppercase tracking-wider font-semibold">Timeline</span>
-            <span className="font-semibold text-slate-900 text-sm">
-              {new Date(hackathon.start_date).toLocaleDateString()} - {new Date(hackathon.end_date).toLocaleDateString()}
-            </span>
+        {/* Teams in Competition */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-base font-bold text-slate-950">Competing Teams Directory</h2>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Teams looking for members with open seats and skill requirements.
+              </p>
+            </div>
+            {hackathon.is_registered && !hackathon.user_team_id && (
+              <button
+                onClick={() => setCreateTeamModalOpen(true)}
+                className="btn btn-secondary text-xs"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Create Team
+              </button>
+            )}
           </div>
 
-          <div className="border-l border-slate-200 pl-6">
-            <span className="text-slate-400 block text-[11px] uppercase tracking-wider font-semibold">Team Boundaries</span>
-            <span className="font-semibold text-slate-900 text-sm">
-              {hackathon.min_team_size} to {hackathon.max_team_size} members
-            </span>
-          </div>
-
-          <div className="border-l border-slate-200 pl-6">
-            <span className="text-slate-400 block text-[11px] uppercase tracking-wider font-semibold">Registration Deadline</span>
-            <span className="font-semibold text-slate-900 text-sm">
-              {new Date(hackathon.registration_deadline).toLocaleDateString()}
-            </span>
-          </div>
-        </div>
-
-        {/* Action Button */}
-        <div className="flex items-center gap-3 w-full md:w-auto">
-          {!user ? (
-            <Link
-              to="/login"
-              className="w-full md:w-auto px-6 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-colors shadow-sm"
-            >
-              Sign In to Register
-            </Link>
-          ) : !hackathon.is_registered ? (
-            <button
-              onClick={handleRegister}
-              className="w-full md:w-auto px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors shadow-sm"
-            >
-              Register for Hackathon
-            </button>
-          ) : hackathon.user_team_id ? (
-            <Link
-              to={`/teams/${hackathon.user_team_id}`}
-              className="w-full md:w-auto px-6 py-2.5 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 text-xs font-semibold hover:bg-blue-100 transition-colors"
-            >
-              Go to Your Team
-            </Link>
+          {teams.length === 0 ? (
+            <div className="panel p-12 text-center space-y-2">
+              <p className="text-sm font-semibold text-slate-800">No teams formed yet for this competition.</p>
+              <p className="text-xs text-slate-500">Register and create the first team to begin recruiting teammates.</p>
+            </div>
           ) : (
-            <button
-              onClick={() => setCreateTeamModalOpen(true)}
-              className="w-full md:w-auto px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-sm"
-            >
-              <PlusCircle className="w-4 h-4" />
-              <span>Create a Team</span>
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Rules & Requirements */}
-      <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3">
-        <h2 className="font-bold text-slate-900 text-base flex items-center gap-2">
-          <ShieldCheck className="w-5 h-5 text-blue-600" />
-          <span>Rules & Guidelines</span>
-        </h2>
-        <p className="text-xs text-slate-600 whitespace-pre-line leading-relaxed">
-          {hackathon.rules || "1. Projects must be built during the designated hackathon timeline.\n2. Respect team capacity limits.\n3. One active team per participant enforced."}
-        </p>
-      </div>
-
-      {/* Teams In Hackathon */}
-      <div className="space-y-4 pt-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="font-bold text-slate-900 text-lg">Teams in this Hackathon</h2>
-            <p className="text-xs text-slate-500">Discover teams currently recruiting members</p>
-          </div>
-          {hackathon.is_registered && !hackathon.user_team_id && (
-            <button
-              onClick={() => setCreateTeamModalOpen(true)}
-              className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1"
-            >
-              <PlusCircle className="w-4 h-4" />
-              <span>Create Team</span>
-            </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {teams.map((t) => (
+                <TeamCard
+                  key={t.id}
+                  team={t}
+                  onRequestJoin={(team) => {
+                    if (!user) {
+                      navigate('/login');
+                      return;
+                    }
+                    if (!hackathon.is_registered) {
+                      alert('You must register for this hackathon before joining a team.');
+                      return;
+                    }
+                    setSelectedTeam(team);
+                    setJoinModalOpen(true);
+                  }}
+                />
+              ))}
+            </div>
           )}
         </div>
 
-        {teams.length === 0 ? (
-          <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 space-y-2">
-            <p className="text-sm font-semibold text-slate-700">No teams created yet.</p>
-            <p className="text-xs text-slate-400">Be the first to create a team for this hackathon!</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {teams.map((t) => (
-              <TeamCard
-                key={t.id}
-                team={t}
-                onRequestJoin={(team) => {
-                  if (!user) {
-                    navigate('/login');
-                    return;
-                  }
-                  if (!hackathon.is_registered) {
-                    alert('You must register for this hackathon before joining a team.');
-                    return;
-                  }
-                  setSelectedTeam(team);
-                  setJoinModalOpen(true);
-                }}
-              />
-            ))}
-          </div>
-        )}
       </div>
 
       {/* Create Team Modal */}
       <Modal
         isOpen={createTeamModalOpen}
         onClose={() => setCreateTeamModalOpen(false)}
-        title="Create a New Hackathon Team"
-        maxWidth="lg"
+        title="Form a New Hackathon Team"
       >
         <form onSubmit={handleCreateTeam} className="space-y-4">
           {formError && (
-            <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 flex-shrink-0" />
-              <span>{formError}</span>
+            <div className="p-3 rounded text-xs bg-rose-50 border border-rose-200 text-rose-700">
+              {formError}
             </div>
           )}
 
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-700">Team Name</label>
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-slate-700">Team Name *</label>
             <input
               type="text"
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
-              placeholder="e.g. Neural Pioneers"
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              placeholder="e.g. Distributed Consensus Forge"
+              className="input text-xs"
               required
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-700">Description</label>
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-slate-700">Project Focus & Description</label>
             <textarea
               rows={3}
               value={teamDesc}
               onChange={(e) => setTeamDesc(e.target.value)}
-              placeholder="What are you building? What kind of teammates are you looking for?"
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              placeholder="What problem are you tackling? What is your technical vision?"
+              className="input text-xs resize-none"
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">Category</label>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-700">Target Category</label>
               <select
                 value={teamCategory}
                 onChange={(e) => setTeamCategory(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm bg-white"
+                className="input text-xs bg-white"
               >
-                {(hackathon.categories || ['General', 'AI/ML', 'Web3']).map((c, i) => (
-                  <option key={i} value={c}>{c}</option>
-                ))}
+                <option value="AI & Machine Learning">AI & Machine Learning</option>
+                <option value="Web3 & Crypto">Web3 & Crypto</option>
+                <option value="Developer Tools">Developer Tools</option>
+                <option value="HealthTech">HealthTech</option>
+                <option value="ClimateTech">ClimateTech</option>
+                <option value="General">General / Open Track</option>
               </select>
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">Maximum Team Size</label>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-700">Max Team Size</label>
               <input
                 type="number"
                 min={hackathon.min_team_size}
                 max={hackathon.max_team_size}
                 value={teamMax}
                 onChange={(e) => setTeamMax(Number(e.target.value))}
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm"
+                className="input text-xs font-mono"
+                required
               />
             </div>
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-700">Required Skills (comma separated)</label>
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-slate-700">Required Skills (comma-separated)</label>
             <input
               type="text"
               value={teamSkills}
               onChange={(e) => setTeamSkills(e.target.value)}
-              placeholder="e.g. Python, FastAPI, React, PyTorch"
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm"
+              placeholder="e.g. PyTorch, React, PostgreSQL, Docker"
+              className="input text-xs"
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-700">Preferred Roles (comma separated)</label>
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-slate-700">Preferred Roles (comma-separated)</label>
             <input
               type="text"
               value={teamRoles}
               onChange={(e) => setTeamRoles(e.target.value)}
-              placeholder="e.g. Backend Engineer, UI/UX Designer"
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm"
+              placeholder="e.g. AI Engineer, Frontend Engineer, Designer"
+              className="input text-xs"
             />
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-4 border-t border-slate-100">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
             <button
               type="button"
               onClick={() => setCreateTeamModalOpen(false)}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100"
+              className="btn btn-secondary text-xs"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm"
+              className="btn btn-primary text-xs"
             >
-              Create Team & Become Leader
+              Initialize Team
             </button>
           </div>
         </form>
       </Modal>
 
-      {/* Join Request Modal */}
+      {/* Request to Join Modal */}
       <Modal
         isOpen={joinModalOpen}
         onClose={() => setJoinModalOpen(false)}
-        title={`Request to Join ${selectedTeam?.name}`}
+        title={`Request to Join: ${selectedTeam?.name || 'Team'}`}
       >
         <form onSubmit={handleJoinRequestSubmit} className="space-y-4">
           <p className="text-xs text-slate-600 leading-relaxed">
-            Send a join request to the team leader. Highlight your relevant skills and experience.
+            Send an introductory note to <strong>{selectedTeam?.leader?.full_name || 'the team leader'}</strong> explaining your technical background and how your skills fulfill the team's needs.
           </p>
 
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-700">Introduction Note (Optional)</label>
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-slate-700">Introductory Message</label>
             <textarea
               rows={4}
               value={joinMessage}
               onChange={(e) => setJoinMessage(e.target.value)}
-              placeholder="Hi! I have 3 years of React/TypeScript experience and would love to build the frontend..."
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              placeholder="Hi, I noticed you need a backend engineer with FastAPI and PostgreSQL expertise. I have 3 years of production experience..."
+              className="input text-xs resize-none"
+              required
             />
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-2">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
             <button
               type="button"
               onClick={() => setJoinModalOpen(false)}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100"
+              className="btn btn-secondary text-xs"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm"
+              className="btn btn-primary text-xs"
             >
-              Send Request
+              Submit Application
             </button>
           </div>
         </form>

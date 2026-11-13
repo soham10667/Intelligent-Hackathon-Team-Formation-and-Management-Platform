@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
-  Users, Compass, Sparkles, CheckCircle2, Clock, PlusCircle, 
-  ArrowRight, Key, AlertCircle, ShieldAlert, Award, FileText 
+  Users, Compass, CheckCircle2, Clock, 
+  ArrowRight, Key, AlertCircle, Shield, Award,
+  Layers, ExternalLink, UserCheck, Check
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { api } from '../services/api';
-import { Hackathon, Team, JoinRequest, TeammateRecommendation } from '../types';
+import { Hackathon, Team, JoinRequest } from '../types';
 import { Modal } from '../components/Modal';
 
 export const DashboardPage: React.FC = () => {
@@ -69,291 +70,386 @@ export const DashboardPage: React.FC = () => {
   };
 
   const profileScore = calculateProfileCompletion();
+  const pendingRequestsCount = myRequests.filter((r) => r.status === 'pending').length;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      
-      {/* Top Welcome Banner */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="space-y-1.5">
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-              Welcome, {user?.full_name}!
-            </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
-              {user?.role === 'admin' ? 'Platform Admin' : 'Competitor'}
-            </span>
-          </div>
-          <p className="text-xs sm:text-sm text-slate-500">
-            {user?.headline || 'Setup your technical profile and find complementary teammates.'}
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3">
-          <button
-            onClick={() => setRedeemModalOpen(true)}
-            className="px-4 py-2.5 rounded-xl border border-slate-200 hover:border-slate-300 text-slate-700 text-xs font-semibold flex items-center gap-2 transition-all hover:bg-slate-50"
-          >
-            <Key className="w-4 h-4 text-slate-400" />
-            <span>Redeem Invite Code</span>
-          </button>
-          <Link
-            to="/discovery"
-            className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-2 transition-all shadow-sm shadow-blue-500/20"
-          >
-            <Compass className="w-4 h-4" />
-            <span>Discover Teams</span>
-          </Link>
-        </div>
-      </div>
-
-      {/* Profile Completion Bar */}
-      <div className="p-5 rounded-2xl bg-gradient-to-r from-blue-50/60 to-indigo-50/40 border border-blue-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="space-y-1 flex-1">
-          <div className="flex items-center justify-between max-w-md">
-            <span className="text-xs font-bold text-slate-800">Profile Completion</span>
-            <span className="text-xs font-bold text-blue-700">{profileScore}%</span>
-          </div>
-          <div className="w-full max-w-md bg-white rounded-full h-2 overflow-hidden border border-slate-200">
-            <div 
-              className="bg-blue-600 h-full rounded-full transition-all duration-500" 
-              style={{ width: `${profileScore}%` }} 
-            />
-          </div>
-        </div>
-        {profileScore < 100 && (
-          <Link
-            to="/profile"
-            className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1"
-          >
-            <span>Complete Profile (+skills & bio)</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        )}
-      </div>
-
-      {/* Grid: Registered Hackathons & Active Teams */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="flex flex-col md:flex-row gap-6">
         
-        {/* Left Column: Registered Hackathons */}
-        <div className="lg:col-span-2 space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Compass className="w-5 h-5 text-blue-600" />
-              <h2 className="font-bold text-slate-900 text-lg">Your Hackathons</h2>
+        {/* Desktop Sidebar (Section 6) */}
+        <aside className="w-full md:w-56 flex-shrink-0 space-y-4">
+          <div className="panel p-3 space-y-1">
+            <div className="px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+              Workspace
             </div>
-            <Link to="/hackathons" className="text-xs font-semibold text-blue-600 hover:text-blue-700">
-              Browse All
+            <Link
+              to="/dashboard"
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded text-xs font-medium text-slate-950 bg-slate-100"
+            >
+              <Layers className="w-3.5 h-3.5 text-slate-700" />
+              <span>Overview</span>
             </Link>
-          </div>
-
-          {loading ? (
-            <div className="p-8 text-center text-xs text-slate-400 bg-white rounded-2xl border">Loading hackathons...</div>
-          ) : registeredHackathons.length === 0 ? (
-            <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 space-y-3">
-              <p className="text-sm font-semibold text-slate-700">You haven't registered for any hackathons yet.</p>
-              <p className="text-xs text-slate-500">Register to start building teams and submitting projects.</p>
+            <Link
+              to="/discovery"
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
+            >
+              <Compass className="w-3.5 h-3.5 text-slate-400" />
+              <span>Discover Teams</span>
+            </Link>
+            <Link
+              to="/hackathons"
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
+            >
+              <Award className="w-3.5 h-3.5 text-slate-400" />
+              <span>Hackathons</span>
+            </Link>
+            <Link
+              to="/teammates"
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
+            >
+              <Users className="w-3.5 h-3.5 text-slate-400" />
+              <span>Find Teammates</span>
+            </Link>
+            <Link
+              to="/profile"
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
+            >
+              <UserCheck className="w-3.5 h-3.5 text-slate-400" />
+              <span>My Profile & Skills</span>
+            </Link>
+            {user?.role === 'admin' && (
               <Link
-                to="/hackathons"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-colors shadow-sm"
+                to="/admin"
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
               >
-                <span>Explore Events</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <Shield className="w-3.5 h-3.5 text-slate-400" />
+                <span>Admin Console</span>
               </Link>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {registeredHackathons.map((h) => (
-                <div
-                  key={h.id}
-                  className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-                >
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-100">
-                        Registered
-                      </span>
-                      <h3 className="font-bold text-slate-900 text-base">{h.title}</h3>
-                    </div>
-                    <p className="text-xs text-slate-500 line-clamp-1">{h.description}</p>
-                    <div className="flex items-center gap-3 text-xs text-slate-400 pt-1">
-                      <span>Max Team Size: {h.max_team_size}</span>
-                      <span>•</span>
-                      <span>Organizer: {h.organizer_name}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 w-full sm:w-auto">
-                    {h.user_team_id ? (
-                      <Link
-                        to={`/teams/${h.user_team_id}`}
-                        className="w-full sm:w-auto px-4 py-2 rounded-xl bg-blue-50 text-blue-700 font-semibold text-xs text-center hover:bg-blue-100 transition-colors border border-blue-200"
-                      >
-                        View My Team
-                      </Link>
-                    ) : (
-                      <Link
-                        to={`/hackathons/${h.id}`}
-                        className="w-full sm:w-auto px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold text-xs text-center hover:bg-blue-700 transition-colors shadow-sm"
-                      >
-                        Create / Join Team
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Join Requests Submitted */}
-          <div className="pt-6 space-y-4">
-            <h2 className="font-bold text-slate-900 text-lg flex items-center gap-2">
-              <Clock className="w-5 h-5 text-indigo-600" />
-              <span>Pending Join Requests</span>
-            </h2>
-
-            {myRequests.length === 0 ? (
-              <div className="p-6 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-400">
-                You have no pending team requests.
-              </div>
-            ) : (
-              <div className="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-100 overflow-hidden">
-                {myRequests.map((req) => (
-                  <div key={req.id} className="p-4 flex items-center justify-between text-xs">
-                    <div>
-                      <p className="font-semibold text-slate-800">Team: {req.team_name || `Team #${req.team_id}`}</p>
-                      <p className="text-slate-500 text-[11px] mt-0.5">Note: "{req.message || 'No message provided'}"</p>
-                    </div>
-                    <div>
-                      <span
-                        className={`px-2.5 py-1 rounded-full font-semibold uppercase text-[10px] ${
-                          req.status === 'pending'
-                            ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                            : req.status === 'accepted'
-                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                            : 'bg-slate-100 text-slate-600'
-                        }`}
-                      >
-                        {req.status}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
             )}
           </div>
-        </div>
 
-        {/* Right Column: Teammate Recommendations & Quick Actions */}
-        <div className="space-y-6">
-          
-          <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-blue-600" />
-              <h3 className="font-bold text-slate-900 text-base">Quick Navigation</h3>
+          {/* Profile Completion Checklist Panel */}
+          <div className="panel p-3.5 space-y-2.5 text-xs">
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-slate-900 text-[11px] uppercase tracking-wider">Profile Status</span>
+              <span className="font-mono text-[11px] font-semibold text-slate-700">{profileScore}%</span>
             </div>
-            
-            <div className="space-y-2">
-              <Link
-                to="/discovery"
-                className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors text-xs font-semibold text-slate-700"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Compass className="w-4 h-4 text-blue-600" />
-                  <span>Team Discovery Board</span>
-                </div>
-                <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
-              </Link>
-
-              <Link
-                to="/teammates"
-                className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors text-xs font-semibold text-slate-700"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Users className="w-4 h-4 text-indigo-600" />
-                  <span>Find Teammates</span>
-                </div>
-                <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
-              </Link>
-
+            <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+              <div 
+                className="bg-slate-900 h-full rounded-full transition-all duration-300" 
+                style={{ width: `${profileScore}%` }} 
+              />
+            </div>
+            <div className="space-y-1 text-[11px] text-slate-500 pt-1">
+              <div className="flex items-center gap-1.5">
+                <Check className={`w-3 h-3 ${user?.skills && user.skills.length >= 3 ? 'text-emerald-600' : 'text-slate-300'}`} />
+                <span>3+ Technical Skills</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Check className={`w-3 h-3 ${user?.bio ? 'text-emerald-600' : 'text-slate-300'}`} />
+                <span>Bio & Headline</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Check className={`w-3 h-3 ${user?.github_url || user?.linkedin_url ? 'text-emerald-600' : 'text-slate-300'}`} />
+                <span>Social / Portfolio URL</span>
+              </div>
+            </div>
+            {profileScore < 100 && (
               <Link
                 to="/profile"
-                className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors text-xs font-semibold text-slate-700"
+                className="block text-[11px] font-medium text-blue-600 hover:text-blue-800 pt-1"
               >
-                <div className="flex items-center gap-2.5">
-                  <Award className="w-4 h-4 text-emerald-600" />
-                  <span>Manage Profile & Skills</span>
-                </div>
-                <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+                Update Profile →
               </Link>
-            </div>
+            )}
           </div>
 
-          <div className="p-6 rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg space-y-3">
-            <h4 className="font-bold text-sm">Have a Team Invite Code?</h4>
-            <p className="text-xs text-blue-100 leading-relaxed">
-              If your team leader gave you an invitation token (e.g. HACK-XXXX-YYYY), enter it directly to join their team.
+          {/* Quick Action: Redeem Invite Code */}
+          <div className="panel p-3.5 space-y-2 text-xs">
+            <div className="font-semibold text-slate-900 text-[11px] uppercase tracking-wider">Have an Invite?</div>
+            <p className="text-[11px] text-slate-500 leading-relaxed">
+              Enter a token (e.g. HACK-XXXX-YYYY) to join a team instantly.
             </p>
             <button
               onClick={() => setRedeemModalOpen(true)}
-              className="w-full py-2.5 px-4 rounded-xl bg-white text-blue-700 font-bold text-xs hover:bg-blue-50 transition-colors shadow-sm"
+              className="w-full py-1.5 px-2.5 rounded text-xs font-medium text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-colors flex items-center justify-center gap-1.5"
             >
-              Enter Invitation Code
+              <Key className="w-3.5 h-3.5 text-slate-500" />
+              <span>Redeem Code</span>
             </button>
           </div>
+        </aside>
 
-        </div>
+        {/* Main Content Area */}
+        <main className="flex-1 space-y-6 min-w-0">
+          
+          {/* Top Header & Contextual Actions */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl font-bold text-slate-950 tracking-tight">
+                  Welcome, {user?.full_name}
+                </h1>
+                <span className="px-1.5 py-0.2 rounded text-[10px] font-mono uppercase bg-slate-100 border border-slate-200 text-slate-700 font-medium">
+                  {user?.role}
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">
+                {user?.headline || `${user?.college_org} • ${user?.preferred_role || 'Developer'}`}
+              </p>
+            </div>
 
+            <div className="flex items-center gap-2">
+              <Link
+                to="/discovery"
+                className="px-3 py-1.5 rounded text-xs font-medium text-white bg-slate-900 hover:bg-slate-800 transition-colors shadow-sm flex items-center gap-1.5"
+              >
+                <Compass className="w-3.5 h-3.5" />
+                <span>Discover Teams</span>
+              </Link>
+              <Link
+                to="/hackathons"
+                className="px-3 py-1.5 rounded text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 transition-colors"
+              >
+                Browse Events
+              </Link>
+            </div>
+          </div>
+
+          {/* Metric Summary Bar (Structured, Non-Floating) */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="panel p-3.5 space-y-0.5">
+              <div className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Registered Events</div>
+              <div className="text-xl font-bold font-mono text-slate-900">{registeredHackathons.length}</div>
+            </div>
+            <div className="panel p-3.5 space-y-0.5">
+              <div className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Pending Requests</div>
+              <div className="text-xl font-bold font-mono text-slate-900">{pendingRequestsCount}</div>
+            </div>
+            <div className="panel p-3.5 space-y-0.5">
+              <div className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Weekly Availability</div>
+              <div className="text-xl font-bold font-mono text-slate-900">{user?.availability_hours_per_week || 20}h/wk</div>
+            </div>
+            <div className="panel p-3.5 space-y-0.5">
+              <div className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Timezone Offset</div>
+              <div className="text-xl font-bold font-mono text-slate-900">{user?.timezone || 'UTC'}</div>
+            </div>
+          </div>
+
+          {/* Structured Table: Your Hackathons & Team Status */}
+          <section className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-slate-950 uppercase tracking-wider text-[11px]">
+                Your Registered Hackathons
+              </h2>
+              <Link to="/hackathons" className="text-xs text-blue-600 hover:text-blue-800 font-medium">
+                View all ({hackathons.length})
+              </Link>
+            </div>
+
+            {loading ? (
+              <div className="panel p-6 text-center text-xs text-slate-400">Loading events...</div>
+            ) : registeredHackathons.length === 0 ? (
+              <div className="panel p-6 text-center space-y-2">
+                <p className="text-xs text-slate-600 font-medium">You have not registered for any hackathons yet.</p>
+                <p className="text-xs text-slate-400">Register for an upcoming competition to create or join a team.</p>
+                <div className="pt-2">
+                  <Link
+                    to="/hackathons"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium text-white bg-slate-900 hover:bg-slate-800 transition-colors"
+                  >
+                    <span>Browse Hackathons</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="panel overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr>
+                      <th className="table-header">Hackathon Event</th>
+                      <th className="table-header">Category</th>
+                      <th className="table-header">Team Limits</th>
+                      <th className="table-header">Membership Status</th>
+                      <th className="table-header text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {registeredHackathons.map((h) => (
+                      <tr key={h.id} className="hover:bg-slate-50/60 transition-colors">
+                        <td className="table-cell font-medium text-slate-900">
+                          <Link to={`/hackathons/${h.id}`} className="hover:underline">
+                            {h.title}
+                          </Link>
+                          <div className="text-[11px] text-slate-500 font-normal">
+                            By {h.organizer_name}
+                          </div>
+                        </td>
+                        <td className="table-cell">
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                            {h.categories?.[0] || 'General'}
+                          </span>
+                        </td>
+                        <td className="table-cell font-mono text-xs text-slate-600">
+                          {h.min_team_size} – {h.max_team_size} members
+                        </td>
+                        <td className="table-cell">
+                          {h.user_team_id ? (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-50 text-emerald-800 border border-emerald-200">
+                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                              <span>In Team (#{h.user_team_id})</span>
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-amber-50 text-amber-800 border border-amber-200">
+                              <Clock className="w-3 h-3 text-amber-600" />
+                              <span>Seeking Team</span>
+                            </span>
+                          )}
+                        </td>
+                        <td className="table-cell text-right">
+                          {h.user_team_id ? (
+                            <Link
+                              to={`/teams/${h.user_team_id}`}
+                              className="px-2.5 py-1 rounded text-xs font-medium text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-colors inline-block"
+                            >
+                              Workspace →
+                            </Link>
+                          ) : (
+                            <Link
+                              to={`/hackathons/${h.id}`}
+                              className="px-2.5 py-1 rounded text-xs font-medium text-white bg-slate-900 hover:bg-slate-800 transition-colors inline-block"
+                            >
+                              Create / Join Team
+                            </Link>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </section>
+
+          {/* Structured Table: Outgoing Join Requests */}
+          <section className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-slate-950 uppercase tracking-wider text-[11px]">
+                Outgoing Join Requests
+              </h2>
+              <span className="text-xs text-slate-400 font-mono">
+                {myRequests.length} total requests
+              </span>
+            </div>
+
+            {myRequests.length === 0 ? (
+              <div className="panel p-5 text-center text-xs text-slate-400">
+                You currently have no pending team join requests.
+              </div>
+            ) : (
+              <div className="panel overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr>
+                      <th className="table-header">Team Target</th>
+                      <th className="table-header">Message / Note</th>
+                      <th className="table-header">Status</th>
+                      <th className="table-header text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {myRequests.map((req) => (
+                      <tr key={req.id} className="hover:bg-slate-50/60 transition-colors">
+                        <td className="table-cell font-medium text-slate-900">
+                          <Link to={`/teams/${req.team_id}`} className="hover:underline flex items-center gap-1">
+                            <span>{req.team_name || `Team #${req.team_id}`}</span>
+                            <ExternalLink className="w-3 h-3 text-slate-400" />
+                          </Link>
+                        </td>
+                        <td className="table-cell text-xs text-slate-600 max-w-xs truncate">
+                          {req.message || '—'}
+                        </td>
+                        <td className="table-cell">
+                          <span
+                            className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase font-semibold ${
+                              req.status === 'pending'
+                                ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                                : req.status === 'accepted'
+                                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                                : 'bg-slate-100 text-slate-600 border border-slate-200'
+                            }`}
+                          >
+                            {req.status}
+                          </span>
+                        </td>
+                        <td className="table-cell text-right">
+                          <Link
+                            to={`/teams/${req.team_id}`}
+                            className="text-xs text-slate-600 hover:text-slate-900 font-medium"
+                          >
+                            View Team
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </section>
+
+        </main>
       </div>
 
       {/* Redeem Modal */}
       <Modal
         isOpen={redeemModalOpen}
         onClose={() => setRedeemModalOpen(false)}
-        title="Redeem Team Invitation"
+        title="Redeem Team Invitation Code"
       >
         <form onSubmit={handleRedeem} className="space-y-4">
           <p className="text-xs text-slate-600 leading-relaxed">
-            Enter the high-entropy invitation code provided by your team leader to atomically join the team.
+            Enter the cryptographic invitation token (e.g. <span className="font-mono text-slate-800 font-medium">HACK-XXXX-YYYY</span>) issued by your team leader to join atomically.
           </p>
 
           {redeemError && (
-            <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            <div className="p-2.5 rounded border border-rose-200 bg-rose-50 text-xs text-rose-800 flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-600 mt-0.5" />
               <span>{redeemError}</span>
             </div>
           )}
 
           {redeemSuccess && (
-            <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-700 flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+            <div className="p-2.5 rounded border border-emerald-200 bg-emerald-50 text-xs text-emerald-800 flex items-start gap-2">
+              <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-600 mt-0.5" />
               <span>{redeemSuccess}</span>
             </div>
           )}
 
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-700">Invitation Code</label>
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-slate-700">Invitation Code</label>
             <input
               type="text"
               value={inviteCode}
               onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
-              placeholder="e.g. HACK-8K9N-W2X7"
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-sm font-mono uppercase"
+              placeholder="HACK-8K9N-W2X7"
+              className="w-full px-3 py-2 rounded border border-slate-200 text-xs font-mono uppercase focus-ring"
               required
             />
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-2">
+          <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
             <button
               type="button"
               onClick={() => setRedeemModalOpen(false)}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100"
+              className="px-3 py-1.5 rounded text-xs font-medium text-slate-600 hover:bg-slate-100"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm"
+              className="px-3 py-1.5 rounded text-xs font-medium text-white bg-slate-900 hover:bg-slate-800 shadow-sm"
             >
               Redeem Code
             </button>
@@ -364,3 +460,4 @@ export const DashboardPage: React.FC = () => {
     </div>
   );
 };
+

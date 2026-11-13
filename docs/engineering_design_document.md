@@ -146,3 +146,4 @@ $$\text{Score} = (W_{\text{skill}} \times S_{\text{skill}}) + (W_{\text{tz}} \ti
    Embed WebRTC or Daily.co 1-click video rooms directly inside the team dashboard for instant team interviews.
 4. **Discord / Slack Webhook Integrations:**
    Provide team leaders with webhook notifications delivered directly into their hackathon Discord servers.
+

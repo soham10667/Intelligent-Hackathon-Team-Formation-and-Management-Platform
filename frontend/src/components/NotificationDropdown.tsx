@@ -110,3 +110,4 @@ export const NotificationDropdown: React.FC<Props> = ({ onClose, setUnreadCount 
     </div>
   );
 };
+

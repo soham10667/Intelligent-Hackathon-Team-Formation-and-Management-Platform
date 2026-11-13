@@ -4,16 +4,46 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-800 antialiased selection:bg-blue-500 selection:text-white;
+    @apply bg-slate-50 text-slate-800 antialiased selection:bg-slate-900 selection:text-white font-sans text-sm;
+    letter-spacing: -0.011em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight text-slate-900 font-semibold;
   }
 }
 
-.gradient-subtle {
-  background: linear-gradient(135deg, rgba(239, 246, 255, 0.8) 0%, rgba(245, 243, 255, 0.6) 100%);
+/* Custom crisp scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
-.glass-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+/* Professional Input & Button Focus Rings */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all;
 }
+
+/* Clean Panel & Table styling */
+.panel {
+  @apply bg-white border border-slate-200/80 rounded-lg shadow-sm;
+}
+
+.table-header {
+  @apply px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider bg-slate-50/80 border-b border-slate-200;
+}
+
+.table-cell {
+  @apply px-4 py-3.5 text-sm text-slate-700 border-b border-slate-100;
+}
+
