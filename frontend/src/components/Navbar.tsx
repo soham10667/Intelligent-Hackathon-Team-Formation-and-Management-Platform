@@ -21,13 +21,16 @@ export const Navbar: React.FC = () => {
     return false;
   };
 
-  const navLinks = [
-    { name: 'Hackathons', path: '/hackathons' },
-    { name: 'Discover Teams', path: '/discovery' },
-    { name: 'Teammates', path: '/teammates' },
-    ...(user ? [{ name: 'Dashboard', path: '/dashboard' }] : []),
-    ...(user?.role === 'admin' ? [{ name: 'Admin', path: '/admin' }] : []),
-  ];
+  const navLinks = user
+    ? [
+        { name: 'Dashboard', path: '/dashboard' },
+        ...(user.role === 'admin' ? [{ name: 'Admin', path: '/admin' }] : []),
+      ]
+    : [
+        { name: 'Hackathons', path: '/hackathons' },
+        { name: 'Discover Teams', path: '/discovery' },
+        { name: 'Teammates', path: '/teammates' },
+      ];
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200/90 h-14 transition-colors">
@@ -35,7 +38,7 @@ export const Navbar: React.FC = () => {
         
         {/* Brand Identity */}
         <div className="flex items-center gap-6">
-          <Link to="/" className="flex items-center gap-2.5">
+          <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-2.5">
             <div className="w-7 h-7 rounded bg-slate-900 flex items-center justify-center text-white shadow-sm">
               <Users className="w-4 h-4 text-slate-100" />
             </div>
