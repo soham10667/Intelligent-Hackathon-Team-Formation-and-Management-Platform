@@ -56,19 +56,14 @@ jobs:
           PYTHONPATH: .
         run: |
           cd backend
-          set -o pipefail
-          python -m pytest -v -s --tb=short tests/test_platform.py 2>&1 | tee pytest_output.txt || {
-            EXIT_CODE=$?
-            echo "## ❌ Pytest Failed with Exit Code $EXIT_CODE" >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            cat pytest_output.txt >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            exit $EXIT_CODE
-          }
-          echo "## ✅ All 25 Integration & Concurrency Tests Passed" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          cat pytest_output.txt >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          python -m pytest -v -s --tb=long tests/test_platform.py 2>&1 | tee pytest_output.txt
+
+      - name: Upload Test Output Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-execution-log
+          path: backend/pytest_output.txt
 
   frontend-build:
     name: Frontend Build & Typecheck
