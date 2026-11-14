@@ -305,3 +305,4 @@ export const AuthenticatedLayout: React.FC = () => {
     </div>
   );
 };
+
