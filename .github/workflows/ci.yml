@@ -45,6 +45,7 @@ jobs:
       - name: Run Database Migrations
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hackathon_platform_test
+          PYTHONPATH: backend:.
         run: |
           cd backend
           python -m alembic upgrade head || true
@@ -52,6 +53,7 @@ jobs:
       - name: Execute Full Automated Test Suite (Including 50-Request Concurrency Test)
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hackathon_platform_test
+          PYTHONPATH: backend:.
         run: |
           cd backend
           python -m pytest -v tests/test_platform.py
