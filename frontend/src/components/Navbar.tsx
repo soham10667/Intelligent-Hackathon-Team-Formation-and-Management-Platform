@@ -22,10 +22,7 @@ export const Navbar: React.FC = () => {
   };
 
   const navLinks = user
-    ? [
-        { name: 'Dashboard', path: '/dashboard' },
-        ...(user.role === 'admin' ? [{ name: 'Admin', path: '/admin' }] : []),
-      ]
+    ? []
     : [
         { name: 'Hackathons', path: '/hackathons' },
         { name: 'Discover Teams', path: '/discovery' },

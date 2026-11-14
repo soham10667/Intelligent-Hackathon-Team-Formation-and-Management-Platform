@@ -48,79 +48,77 @@ export const HackathonsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/60 pb-16">
+    <div className="space-y-6">
       
-      {/* Page Header */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-4">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-slate-950 tracking-tight">
-                  Hackathon Registry
-                </h1>
-                <span className="font-mono text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
-                  {hackathons.length} competitions listed
-                </span>
-              </div>
-              <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
-                Browse verified hackathons, register your participation, form teams, and collaborate toward project submission.
-              </p>
+      {/* Page Header Panel */}
+      <div className="panel p-5 space-y-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-bold text-slate-950 tracking-tight">
+                Hackathon Registry
+              </h1>
+              <span className="font-mono text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+                {hackathons.length} competitions listed
+              </span>
             </div>
+            <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
+              Browse verified hackathons, register your participation, form teams, and collaborate toward project submission.
+            </p>
           </div>
+        </div>
 
-          {/* Search & Filter Bar */}
-          <div className="pt-2 flex flex-col md:flex-row items-center gap-3">
-            <form onSubmit={handleSearchSubmit} className="relative flex-1 w-full">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search by hackathon title, domain, or host..."
-                className="input pl-9 text-xs"
-              />
-            </form>
+        {/* Search & Filter Bar */}
+        <div className="pt-2 flex flex-col md:flex-row items-center gap-3">
+          <form onSubmit={handleSearchSubmit} className="relative flex-1 w-full">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by hackathon title, domain, or host..."
+              className="input pl-9 text-xs"
+            />
+          </form>
 
-            <div className="flex items-center gap-2 w-full md:w-auto">
-              <select
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-                className="input text-xs w-full md:w-44 bg-white"
-              >
-                <option value="All">All Categories</option>
-                <option value="AI/ML">AI & Machine Learning</option>
-                <option value="Web3">Web3 & Decentralized</option>
-                <option value="Developer Tools">Developer Tools</option>
-                <option value="HealthTech">HealthTech</option>
-                <option value="ClimateTech">ClimateTech</option>
-              </select>
+          <div className="flex items-center gap-2 w-full md:w-auto">
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="input text-xs w-full md:w-44 bg-white"
+            >
+              <option value="All">All Categories</option>
+              <option value="AI/ML">AI & Machine Learning</option>
+              <option value="Web3">Web3 & Decentralized</option>
+              <option value="Developer Tools">Developer Tools</option>
+              <option value="HealthTech">HealthTech</option>
+              <option value="ClimateTech">ClimateTech</option>
+            </select>
 
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="input text-xs w-full md:w-36 bg-white"
-              >
-                <option value="All">All Phases</option>
-                <option value="ongoing">Active / Ongoing</option>
-                <option value="upcoming">Upcoming</option>
-                <option value="ended">Concluded</option>
-              </select>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="input text-xs w-full md:w-36 bg-white"
+            >
+              <option value="All">All Phases</option>
+              <option value="ongoing">Active / Ongoing</option>
+              <option value="upcoming">Upcoming</option>
+              <option value="ended">Concluded</option>
+            </select>
 
-              <button
-                type="button"
-                onClick={fetchHackathons}
-                className="btn btn-primary text-xs whitespace-nowrap"
-              >
-                Filter
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={fetchHackathons}
+              className="btn btn-primary text-xs whitespace-nowrap"
+            >
+              Filter
+            </button>
           </div>
         </div>
       </div>
 
       {/* Main Hackathon Directory */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+      <div>
         {loading ? (
           <div className="py-20 text-center">
             <div className="inline-flex items-center gap-2 text-xs font-mono text-slate-500">

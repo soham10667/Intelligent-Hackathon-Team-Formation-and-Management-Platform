@@ -2,13 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Users, Compass, CheckCircle2, Clock, 
-  ArrowRight, Key, AlertCircle, Shield, Award,
-  Layers, ExternalLink, UserCheck, Check
+  ArrowRight, Shield, Award, ExternalLink 
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { api } from '../services/api';
 import { Hackathon, Team, JoinRequest } from '../types';
-import { Modal } from '../components/Modal';
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth();
@@ -16,10 +14,6 @@ export const DashboardPage: React.FC = () => {
 
   const [hackathons, setHackathons] = useState<Hackathon[]>([]);
   const [myRequests, setMyRequests] = useState<JoinRequest[]>([]);
-  const [redeemModalOpen, setRedeemModalOpen] = useState(false);
-  const [inviteCode, setInviteCode] = useState('');
-  const [redeemError, setRedeemError] = useState<string | null>(null);
-  const [redeemSuccess, setRedeemSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,150 +34,12 @@ export const DashboardPage: React.FC = () => {
     loadDashboard();
   }, []);
 
-  const handleRedeem = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setRedeemError(null);
-    setRedeemSuccess(null);
-    try {
-      const member = await api.redeemInvitation(inviteCode.trim());
-      setRedeemSuccess(`Successfully joined team! Redirecting...`);
-      setTimeout(() => {
-        setRedeemModalOpen(false);
-        navigate(`/teams/${member.team_id}`);
-      }, 1000);
-    } catch (err: any) {
-      setRedeemError(err.message || 'Failed to redeem invitation code');
-    }
-  };
-
   const registeredHackathons = hackathons.filter((h) => h.is_registered);
-
-  // Compute profile completion percentage
-  const calculateProfileCompletion = () => {
-    if (!user) return 0;
-    let score = 30; // base registered
-    if (user.bio) score += 15;
-    if (user.headline) score += 15;
-    if (user.skills && user.skills.length >= 3) score += 20;
-    if (user.github_url || user.linkedin_url) score += 20;
-    return Math.min(100, score);
-  };
-
-  const profileScore = calculateProfileCompletion();
   const pendingRequestsCount = myRequests.filter((r) => r.status === 'pending').length;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div className="flex flex-col md:flex-row gap-6">
-        
-        {/* Desktop Sidebar (Section 6) */}
-        <aside className="w-full md:w-56 flex-shrink-0 space-y-4">
-          <div className="panel p-3 space-y-1">
-            <div className="px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-              Workspace
-            </div>
-            <Link
-              to="/dashboard"
-              className="flex items-center gap-2 px-2.5 py-1.5 rounded text-xs font-medium text-slate-950 bg-slate-100"
-            >
-              <Layers className="w-3.5 h-3.5 text-slate-700" />
-              <span>Overview</span>
-            </Link>
-            <Link
-              to="/discovery"
-              className="flex items-center gap-2 px-2.5 py-1.5 rounded text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
-            >
-              <Compass className="w-3.5 h-3.5 text-slate-400" />
-              <span>Discover Teams</span>
-            </Link>
-            <Link
-              to="/hackathons"
-              className="flex items-center gap-2 px-2.5 py-1.5 rounded text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
-            >
-              <Award className="w-3.5 h-3.5 text-slate-400" />
-              <span>Hackathons</span>
-            </Link>
-            <Link
-              to="/teammates"
-              className="flex items-center gap-2 px-2.5 py-1.5 rounded text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
-            >
-              <Users className="w-3.5 h-3.5 text-slate-400" />
-              <span>Find Teammates</span>
-            </Link>
-            <Link
-              to="/profile"
-              className="flex items-center gap-2 px-2.5 py-1.5 rounded text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
-            >
-              <UserCheck className="w-3.5 h-3.5 text-slate-400" />
-              <span>My Profile & Skills</span>
-            </Link>
-            {user?.role === 'admin' && (
-              <Link
-                to="/admin"
-                className="flex items-center gap-2 px-2.5 py-1.5 rounded text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
-              >
-                <Shield className="w-3.5 h-3.5 text-slate-400" />
-                <span>Admin Console</span>
-              </Link>
-            )}
-          </div>
-
-          {/* Profile Completion Checklist Panel */}
-          <div className="panel p-3.5 space-y-2.5 text-xs">
-            <div className="flex items-center justify-between">
-              <span className="font-semibold text-slate-900 text-[11px] uppercase tracking-wider">Profile Status</span>
-              <span className="font-mono text-[11px] font-semibold text-slate-700">{profileScore}%</span>
-            </div>
-            <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-              <div 
-                className="bg-slate-900 h-full rounded-full transition-all duration-300" 
-                style={{ width: `${profileScore}%` }} 
-              />
-            </div>
-            <div className="space-y-1 text-[11px] text-slate-500 pt-1">
-              <div className="flex items-center gap-1.5">
-                <Check className={`w-3 h-3 ${user?.skills && user.skills.length >= 3 ? 'text-emerald-600' : 'text-slate-300'}`} />
-                <span>3+ Technical Skills</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Check className={`w-3 h-3 ${user?.bio ? 'text-emerald-600' : 'text-slate-300'}`} />
-                <span>Bio & Headline</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Check className={`w-3 h-3 ${user?.github_url || user?.linkedin_url ? 'text-emerald-600' : 'text-slate-300'}`} />
-                <span>Social / Portfolio URL</span>
-              </div>
-            </div>
-            {profileScore < 100 && (
-              <Link
-                to="/profile"
-                className="block text-[11px] font-medium text-blue-600 hover:text-blue-800 pt-1"
-              >
-                Update Profile →
-              </Link>
-            )}
-          </div>
-
-          {/* Quick Action: Redeem Invite Code */}
-          <div className="panel p-3.5 space-y-2 text-xs">
-            <div className="font-semibold text-slate-900 text-[11px] uppercase tracking-wider">Have an Invite?</div>
-            <p className="text-[11px] text-slate-500 leading-relaxed">
-              Enter a token (e.g. HACK-XXXX-YYYY) to join a team instantly.
-            </p>
-            <button
-              onClick={() => setRedeemModalOpen(true)}
-              className="w-full py-1.5 px-2.5 rounded text-xs font-medium text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-colors flex items-center justify-center gap-1.5"
-            >
-              <Key className="w-3.5 h-3.5 text-slate-500" />
-              <span>Redeem Code</span>
-            </button>
-          </div>
-        </aside>
-
-        {/* Main Content Area */}
-        <main className="flex-1 space-y-6 min-w-0">
-          
-          {/* Top Header & Contextual Actions */}
+    <div className="space-y-6">
+      {/* Top Header & Contextual Actions */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
             <div>
               <div className="flex items-center gap-2">
@@ -398,64 +254,6 @@ export const DashboardPage: React.FC = () => {
               </div>
             )}
           </section>
-
-        </main>
-      </div>
-
-      {/* Redeem Modal */}
-      <Modal
-        isOpen={redeemModalOpen}
-        onClose={() => setRedeemModalOpen(false)}
-        title="Redeem Team Invitation Code"
-      >
-        <form onSubmit={handleRedeem} className="space-y-4">
-          <p className="text-xs text-slate-600 leading-relaxed">
-            Enter the cryptographic invitation token (e.g. <span className="font-mono text-slate-800 font-medium">HACK-XXXX-YYYY</span>) issued by your team leader to join atomically.
-          </p>
-
-          {redeemError && (
-            <div className="p-2.5 rounded border border-rose-200 bg-rose-50 text-xs text-rose-800 flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-600 mt-0.5" />
-              <span>{redeemError}</span>
-            </div>
-          )}
-
-          {redeemSuccess && (
-            <div className="p-2.5 rounded border border-emerald-200 bg-emerald-50 text-xs text-emerald-800 flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-600 mt-0.5" />
-              <span>{redeemSuccess}</span>
-            </div>
-          )}
-
-          <div className="space-y-1">
-            <label className="text-xs font-medium text-slate-700">Invitation Code</label>
-            <input
-              type="text"
-              value={inviteCode}
-              onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
-              placeholder="HACK-8K9N-W2X7"
-              className="w-full px-3 py-2 rounded border border-slate-200 text-xs font-mono uppercase focus-ring"
-              required
-            />
-          </div>
-
-          <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
-            <button
-              type="button"
-              onClick={() => setRedeemModalOpen(false)}
-              className="px-3 py-1.5 rounded text-xs font-medium text-slate-600 hover:bg-slate-100"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-3 py-1.5 rounded text-xs font-medium text-white bg-slate-900 hover:bg-slate-800 shadow-sm"
-            >
-              Redeem Code
-            </button>
-          </div>
-        </form>
-      </Modal>
 
     </div>
   );

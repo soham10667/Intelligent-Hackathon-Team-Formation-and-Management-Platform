@@ -72,21 +72,19 @@ export const ProfilePage: React.FC = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-slate-50/60 pb-16">
+    <div className="space-y-6">
       
       {/* Header Panel */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-1">
-          <h1 className="text-2xl font-bold text-slate-950 tracking-tight">
-            Developer Profile & Preferences
-          </h1>
-          <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
-            Keep your skills and working availability updated to ensure precision team matching and compatibility scoring.
-          </p>
-        </div>
+      <div className="panel p-5 space-y-1">
+        <h1 className="text-xl font-bold text-slate-950 tracking-tight">
+          Developer Profile & Preferences
+        </h1>
+        <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
+          Keep your skills and working availability updated to ensure precision team matching and compatibility scoring.
+        </p>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+      <div>
         {success && (
           <div className="mb-6 p-3 rounded bg-emerald-50 border border-emerald-200 text-xs font-medium text-emerald-800 flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />

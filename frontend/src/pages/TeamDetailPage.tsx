@@ -182,13 +182,12 @@ export const TeamDetailPage: React.FC = () => {
   const fillPercent = Math.min(100, Math.round((team.members.length / team.max_size) * 100));
 
   return (
-    <div className="min-h-screen bg-slate-50/60 pb-16">
+    <div className="space-y-6">
       {/* Workspace Header */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-4">
-          
-          {/* Breadcrumb Navigation */}
-          <nav className="flex items-center gap-2 text-xs text-slate-500 font-mono">
+      <div className="panel p-5 space-y-4">
+        
+        {/* Breadcrumb Navigation */}
+        <nav className="flex items-center gap-2 text-xs text-slate-500 font-mono">
             <Link to="/hackathons" className="hover:text-slate-900 transition-colors">
               Hackathons
             </Link>
@@ -278,11 +277,8 @@ export const TeamDetailPage: React.FC = () => {
             </div>
           </div>
 
-        </div>
-
         {/* Sub-Navigation Tabs */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-1 overflow-x-auto border-t border-slate-200 -mb-px">
+        <div className="flex items-center gap-1 overflow-x-auto border-t border-slate-200 -mb-px pt-2">
             <button
               onClick={() => setActiveTab('members')}
               className={`py-3 px-3.5 text-xs font-medium border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap ${
@@ -382,10 +378,9 @@ export const TeamDetailPage: React.FC = () => {
             </button>
           </div>
         </div>
-      </div>
 
       {/* Main Tab Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+      <div className="space-y-6">
         
         {/* ==================== TAB 1: MEMBERS ROSTER ==================== */}
         {activeTab === 'members' && (

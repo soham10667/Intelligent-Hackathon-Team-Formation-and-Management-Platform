@@ -35,93 +35,91 @@ export const TeammatesPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/60 pb-16">
+    <div className="space-y-6">
       
       {/* Header Panel */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-4">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-slate-950 tracking-tight">
-                  Participant Directory
-                </h1>
-                <span className="font-mono text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
-                  {users.length} verified builders
-                </span>
-              </div>
-              <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
-                Discover unteamed competitors, review verified technical skills and proficiencies, and coordinate complementary team rosters.
-              </p>
+      <div className="panel p-5 space-y-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-bold text-slate-950 tracking-tight">
+                Participant Directory
+              </h1>
+              <span className="font-mono text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+                {users.length} verified builders
+              </span>
             </div>
-
-            {/* Layout Toggle */}
-            <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded border border-slate-200 self-start md:self-auto">
-              <button
-                onClick={() => setViewMode('table')}
-                className={`p-1.5 rounded text-xs flex items-center gap-1.5 transition-colors ${
-                  viewMode === 'table' ? 'bg-white text-slate-950 font-medium shadow-sm' : 'text-slate-500 hover:text-slate-800'
-                }`}
-                title="Dense table view"
-              >
-                <List className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Table</span>
-              </button>
-              <button
-                onClick={() => setViewMode('cards')}
-                className={`p-1.5 rounded text-xs flex items-center gap-1.5 transition-colors ${
-                  viewMode === 'cards' ? 'bg-white text-slate-950 font-medium shadow-sm' : 'text-slate-500 hover:text-slate-800'
-                }`}
-                title="Card grid view"
-              >
-                <LayoutGrid className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Cards</span>
-              </button>
-            </div>
+            <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
+              Discover unteamed competitors, review verified technical skills and proficiencies, and coordinate complementary team rosters.
+            </p>
           </div>
 
-          {/* Search & Filters */}
-          <div className="pt-2 flex flex-col md:flex-row items-center gap-3">
-            <form onSubmit={handleSearchSubmit} className="relative flex-1 w-full">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search by candidate name, skill (e.g. PyTorch, React, Go), or affiliation..."
-                className="input pl-9 text-xs"
-              />
-            </form>
+          {/* Layout Toggle */}
+          <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded border border-slate-200 self-start md:self-auto">
+            <button
+              onClick={() => setViewMode('table')}
+              className={`p-1.5 rounded text-xs flex items-center gap-1.5 transition-colors ${
+                viewMode === 'table' ? 'bg-white text-slate-950 font-medium shadow-sm' : 'text-slate-500 hover:text-slate-800'
+              }`}
+              title="Dense table view"
+            >
+              <List className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Table</span>
+            </button>
+            <button
+              onClick={() => setViewMode('cards')}
+              className={`p-1.5 rounded text-xs flex items-center gap-1.5 transition-colors ${
+                viewMode === 'cards' ? 'bg-white text-slate-950 font-medium shadow-sm' : 'text-slate-500 hover:text-slate-800'
+              }`}
+              title="Card grid view"
+            >
+              <LayoutGrid className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Cards</span>
+            </button>
+          </div>
+        </div>
 
-            <div className="flex items-center gap-2 w-full md:w-auto">
-              <select
-                value={roleFilter}
-                onChange={(e) => setRoleFilter(e.target.value)}
-                className="input text-xs w-full md:w-48 bg-white"
-              >
-                <option value="All">All Disciplines</option>
-                <option value="Full Stack">Full Stack Developer</option>
-                <option value="Frontend">Frontend Developer</option>
-                <option value="Backend">Backend Engineer</option>
-                <option value="AI/ML">AI/ML Engineer</option>
-                <option value="UI/UX">UI/UX Designer</option>
-                <option value="DevOps">DevOps Engineer</option>
-              </select>
+        {/* Search & Filters */}
+        <div className="pt-2 flex flex-col md:flex-row items-center gap-3">
+          <form onSubmit={handleSearchSubmit} className="relative flex-1 w-full">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by candidate name, skill (e.g. PyTorch, React, Go), or affiliation..."
+              className="input pl-9 text-xs"
+            />
+          </form>
 
-              <button
-                type="button"
-                onClick={fetchUsers}
-                className="btn btn-primary text-xs whitespace-nowrap"
-              >
-                Apply Filter
-              </button>
-            </div>
+          <div className="flex items-center gap-2 w-full md:w-auto">
+            <select
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value)}
+              className="input text-xs w-full md:w-48 bg-white"
+            >
+              <option value="All">All Disciplines</option>
+              <option value="Full Stack">Full Stack Developer</option>
+              <option value="Frontend">Frontend Developer</option>
+              <option value="Backend">Backend Engineer</option>
+              <option value="AI/ML">AI/ML Engineer</option>
+              <option value="UI/UX">UI/UX Designer</option>
+              <option value="DevOps">DevOps Engineer</option>
+            </select>
+
+            <button
+              type="button"
+              onClick={fetchUsers}
+              className="btn btn-primary text-xs whitespace-nowrap"
+            >
+              Apply Filter
+            </button>
           </div>
         </div>
       </div>
 
       {/* Main Body */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+      <div>
         {loading ? (
           <div className="py-20 text-center">
             <div className="inline-flex items-center gap-2 text-xs font-mono text-slate-500">

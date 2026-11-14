@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
+import { AuthenticatedLayout } from './components/AuthenticatedLayout';
 
 // Pages
 import { LandingPage } from './pages/LandingPage';
@@ -47,40 +48,43 @@ export const App: React.FC = () => {
             <Navbar />
             <main className="flex-1">
               <Routes>
+                {/* Public Marketing & Auth Pages */}
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
-                <Route path="/hackathons" element={<HackathonsPage />} />
-                <Route path="/hackathons/:id" element={<HackathonDetailPage />} />
-                <Route path="/discovery" element={<DiscoveryPage />} />
-                <Route path="/teams/:id" element={<TeamDetailPage />} />
-                <Route path="/teammates" element={<TeammatesPage />} />
                 
-                {/* Protected Routes */}
-                <Route
-                  path="/dashboard"
-                  element={
-                    <ProtectedRoute>
-                      <DashboardPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/profile"
-                  element={
-                    <ProtectedRoute>
-                      <ProfilePage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/admin"
-                  element={
-                    <ProtectedRoute>
-                      <AdminPage />
-                    </ProtectedRoute>
-                  }
-                />
+                {/* Application Workspace Routes (Persistent Sidebar when Authenticated) */}
+                <Route element={<AuthenticatedLayout />}>
+                  <Route
+                    path="/dashboard"
+                    element={
+                      <ProtectedRoute>
+                        <DashboardPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route path="/discovery" element={<DiscoveryPage />} />
+                  <Route path="/hackathons" element={<HackathonsPage />} />
+                  <Route path="/hackathons/:id" element={<HackathonDetailPage />} />
+                  <Route path="/teams/:id" element={<TeamDetailPage />} />
+                  <Route path="/teammates" element={<TeammatesPage />} />
+                  <Route
+                    path="/profile"
+                    element={
+                      <ProtectedRoute>
+                        <ProfilePage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin"
+                    element={
+                      <ProtectedRoute>
+                        <AdminPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Route>
 
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>

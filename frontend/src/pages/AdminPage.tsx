@@ -52,12 +52,11 @@ export const AdminPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50/60 pb-16">
+    <div className="space-y-6">
       
       {/* Header Panel */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="panel p-5 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-slate-900" />
@@ -176,11 +175,7 @@ export const AdminPage: React.FC = () => {
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Main Content Area */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        
         {/* ==================== TAB 1: OVERVIEW ==================== */}
         {activeTab === 'overview' && analytics && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -318,7 +313,5 @@ export const AdminPage: React.FC = () => {
         )}
 
       </div>
-
-    </div>
   );
 };

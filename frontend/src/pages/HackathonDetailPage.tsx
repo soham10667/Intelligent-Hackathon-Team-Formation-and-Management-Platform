@@ -122,20 +122,19 @@ export const HackathonDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50/60 pb-16">
+    <div className="space-y-6">
       
       {/* Header Workspace */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-4">
-          
-          {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-xs text-slate-500 font-mono">
-            <Link to="/hackathons" className="hover:text-slate-900 transition-colors">
-              Hackathons
-            </Link>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-            <span className="text-slate-900 font-medium truncate">{hackathon.title}</span>
-          </nav>
+      <div className="panel p-5 space-y-4">
+        
+        {/* Breadcrumb */}
+        <nav className="flex items-center gap-2 text-xs text-slate-500 font-mono">
+          <Link to="/hackathons" className="hover:text-slate-900 transition-colors">
+            Hackathons
+          </Link>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+          <span className="text-slate-900 font-medium truncate">{hackathon.title}</span>
+        </nav>
 
           {/* Title & Actions */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pt-1">
@@ -227,10 +226,9 @@ export const HackathonDetailPage: React.FC = () => {
           </div>
 
         </div>
-      </div>
 
       {/* Main Content Area */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
+      <div className="space-y-8">
         
         {/* Guidelines Panel */}
         <div className="panel p-5 space-y-2">
